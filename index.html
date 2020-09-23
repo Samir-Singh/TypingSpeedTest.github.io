@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> 
+	<link rel="stylesheet"  href="bootstrap.min.css">
+	<title>Typing Speed Test</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Baloo+Tamma+2&display=swap');
+		*{
+			padding:0;
+			margin: 0;
+		    box-sizing: border-box;
+		    font-family: 'Baloo Tamma 2', cursive;
+		}
+		.mainDiv{
+			width: 100%;
+			height: 100vh;
+			position: relative;
+			background: #3498db;
+		}
+		.centerDiv{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			text-align: center;
+			width: 100%;
+		}
+		h1{
+			text-transform: capitalize;
+			text-align: center
+			margin-bottom: 30px;
+			color: #ecf0f1;
+			text-shadow: 1px 2px 2px 3px #2980b9;
+			font-size: 3.6rem;
+			width: 100%;
+		}
+		h2{
+			text-align: center;
+		}
+		p{
+			font-size: 1.5rem;
+			color: #FF0000;
+		}
+	</style>
+</head>
+<body>
+	<div class="container-fluid bg-info d-flex flex-column mainDiv">
+		<div class="container centerDiv">
+			<h1>Welcome To Typing Speed Test</h1>
+			<h2 id="msg"></h2><br>
+			<p id="para" class="container-fluid"></p>
+			<h2 id='msg2'></h2>
+			<textarea class="form-control" id="myWords" cols="100" rows="10" placeholder="Click the Start button.  Rule of the game read Carefully :
+1. If you click on the Start button the time Starts. If you click the button again time Ends and you will see your result.
+2. When you click on the Start button you will see a paragraph.
+3. Dont give double space. If you give double space then all of your written text after the double space will be treated as wrong.So be CareFull." disabled="disabled"></textarea><br>
+			<button class="btn btn-success" id="btn" class="mainbtn">Start</button>
+		</div>
+		
+	</div>
+	<script>
+		const setOfWords=['All our dreams can come true, if we have the courage to pursue them', 'The secret of getting ahead is getting started', 'It is hard to beat a person who never gives up', `Don't wish it were easier, wish you were better`, 'Aim for the moon. If you miss, you may hit a star', 'Arise, Awake and Stop not until the goal is reached', 'Opportunity does not knock, it presents itself when you beat down the door'];
+		const msg=document.getElementById('msg');
+		const typeWords=document.getElementById('myWords');
+		const btn=document.getElementById('btn');
+		const para=document.getElementById('para');
+		let startTime, endTime;
+
+        const playGame = () =>{
+        	console.clear();
+        	let randomeNumber = Math.floor(Math.random()*setOfWords.length);
+        	msg.innerText = setOfWords[randomeNumber];
+        	console.log(`Question:: ${msg.innerText}`);
+        	let date = new Date();
+        	startTime = date.getTime();
+        	btn.innerText = 'Done';
+        }
+        const endGame = () =>{
+        	let date = new Date();
+        	endTime = date.getTime();
+        	let totalTime = ((endTime - startTime)/1000);
+        	console.log(totalTime);
+        	let totalStr = typeWords.value;
+        	console.log(`You Type:: ${totalStr}`);
+        	let wordCount = wordCounter(totalStr);
+        	let speed = Math.round((wordCount/totalTime) * 60);
+        	let finalMsg = `You type total ${speed} words per minute. `;
+        	finalMsg += compareWords(msg.innerText, totalStr);
+        	msg2.innerText = finalMsg;
+        }
+        const compareWords =(str1, str2) =>{
+            let words1 = str1.split(" ");
+            let words2 = str2.split(" ");
+            let cnt = 0;
+            let str='';
+            // console.log(words1);
+            // console.log(words2);
+            words1.forEach(function(item, index){
+            	if(item == words2[index]){
+            		cnt++;
+            	}
+            });
+            words1.forEach(function(item, index){
+            	if(item!=words2[index]){
+            		str=`${str} ${item},`;
+            	}
+            });
+            console.log(`Error words are:: ${str}`);
+            para.innerText=`Error words are:: ${str}`;
+
+            let errorWords = (words1.length-cnt);
+            return (`${cnt} correct out of ${words1.length} words and the total number of errors are ${errorWords}.`);
+        }
+        const wordCounter = (str) =>{
+        	let response = str.split(' ').length;
+        	return response;
+        }
+
+		btn.addEventListener('click', function(){
+
+			if(this.innerText == 'Start'){
+                typeWords.disabled = false;
+                typeWords.value = "";
+                msg2.innerText='';
+                para.innerText='';
+                playGame();
+			}else if(this.innerText = "Done"){
+				typeWords.innerText = "";
+				typeWords.disabled = true;
+				btn.innerText="Start";
+				endGame();
+			}
+		});
+	</script>
+</body>
+</html>
+
+<!-- 
+                                              DYNAMIC TYPING TEST
+
+1.When user press the Start button then only active the textarea else disabled it and vice-versa.
+2.Every time a new set of line on top. Whenever a start button is pressed. Not the Done one.
+3.Get the time and change the button text to Done.
+4.Get the end time when user clicked on the Done button. Find the total time taken.
+5.Find the total words on the setofWords.
+6.Find the Speed of the user and show it on the top when user clicked on Done.
+7.Then call the compareWords function and find how many of the words are matching and how many not.Display the result on the top with speed.
+
+
+                                             LOGIC FOR FINDING SPEED
+1.Find the start time when you click the button.
+2.Find the end time when you click the button.
+3.subtract endtime to starttime (endtime-starttime).
+4.Divide the output with 1000 to get answer in millisecond and assign them in the (totaltime).
+5.Find the total words you typed.Divide it by totaltime (numberofwords/totaltime) and then multiply it with 60.
+  -->
